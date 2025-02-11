@@ -4,14 +4,16 @@ import uuid
 from PyQt6.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
     QDateTimeEdit, QSpinBox, QPushButton, QListWidget, QListWidgetItem,
-    QFormLayout, QMessageBox
+    QFormLayout, QMessageBox, QSystemTrayIcon, QMenu
 )
 from PyQt6.QtCore import QDateTime, QTimer, Qt
+from PyQt6.QtGui import QIcon
 
 class AlarmApp(QWidget):
     def __init__(self):
         super().__init__()
         self.init_ui()
+        self.init_tray_icon()
         self.alarms = self.load_alarms()
     
     def init_ui(self):
@@ -69,6 +71,38 @@ class AlarmApp(QWidget):
         self.timer.timeout.connect(self.check_alarms)
         self.timer.start(60000)
 
+    def init_tray_icon(self):
+        self.tray_icon = QSystemTrayIcon(self)
+        self.tray_icon.setIcon(QIcon("clock-tray-icon.png"))
+
+        menu = QMenu()
+        open_action = menu.addAction("열기")
+        open_action.triggered.connect(self.show_window)
+        exit_action = menu.addAction("종료")
+        exit_action.triggered.connect(self.exit_app)
+
+        self.tray_icon.setContextMenu(menu)
+        self.tray_icon.activated.connect(self.on_tray_icon_activated)
+
+        self.tray_icon.show()
+
+    def closeEvent(self, event):
+        event.ignore()
+        self.hide()
+        self.tray_icon.showMessage("알람 프로그램", "백그라운드에서 실행 중입니다.", QSystemTrayIcon.MessageIcon.Information)
+
+    def show_window(self):
+        self.showNormal()
+        self.activateWindow()
+
+    def on_tray_icon_activated(self, reason):
+        if reason == QSystemTrayIcon.ActivationReason.DoubleClick:
+            self.show_window()
+
+    def exit_app(self):
+        self.tray_icon.hide()
+        sys.exit()
+
     def load_alarms_in_ui(self):
         for alarm in self.load_alarms():
             print(f"기존 알람: {alarm}")
@@ -103,6 +137,7 @@ class AlarmApp(QWidget):
         self.show_alarm_popup(alarm)
         
     def show_alarm_popup(self, alarm):
+        print(f"팝업알람: {alarm}")
         msg_box = QMessageBox()
         msg_box.setWindowTitle("알람")
         msg_box.setText(alarm['title'])
