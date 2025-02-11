@@ -13,7 +13,7 @@ class AlarmApp(QWidget):
     def __init__(self):
         super().__init__()
         self.init_ui()
-        self.init_tray_icon()
+        # self.init_tray_icon()
         self.alarms = self.load_alarms()
     
     def init_ui(self):
@@ -153,10 +153,12 @@ class AlarmApp(QWidget):
             print(f"5분뒤***")
             self.on_remind_in_5_minutes(alarm)
         elif msg_box.clickedButton() == dismiss_button:
-            for i in range(self.alarm_list.count()):
+            for i in range(self.alarm_list.count()-1, -1, -1):
+                print(f"카운트: {i}")
                 item = self.alarm_list.item(i)
+                print(f"삭제아이템: {self.alarm_list.item(i).data(Qt.ItemDataRole.UserRole)}")
                 if item.data(Qt.ItemDataRole.UserRole) == alarm['id']:
-                    self.alarm_list.takeItem(i) 
+                    self.alarm_list.takeItem(i)
 
             self.delete_alarm(alarm['id'])
 
