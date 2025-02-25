@@ -13,7 +13,7 @@ class AlarmApp(QWidget):
     def __init__(self):
         super().__init__()
         self.init_ui()
-        # self.init_tray_icon()
+        self.init_tray_icon()
         self.alarms = self.load_alarms()
     
     def init_ui(self):
@@ -238,6 +238,7 @@ class AlarmApp(QWidget):
     
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    app.setQuitOnLastWindowClosed(False)
     window = AlarmApp()
     window.show()
     sys.exit(app.exec())
