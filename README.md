@@ -11,5 +11,5 @@
 
 ---
 # 설치 방법
-1. 해당 프로젝트가 있는 프로젝트에서 ``pyinstaller --onefile --windowed your_script.py`` 를 실행한다.
+1. 해당 프로젝트가 있는 경로에서 ``pyinstaller --onefile --windowed your_script.py`` 를 실행한다.
 2. 생성된 dist 폴더에 있는 .exe 파일과 alarm.json 파일을 한 폴더에 넣고 .exe 파일을 실행한다.
